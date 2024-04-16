@@ -1,5 +1,8 @@
 // rn file-based API (read data from file) later store data in DB
 // status code 200 completed, 201 created. 204 no content
+// GET get data, POST create data, PATCH updata data, DELETE delete data
+// express doesnt put body data on req -> use middleware
+// POST send data from client to server, req hold all data
 
 const fs = require('fs');
 // all express config in app.js
@@ -116,8 +119,8 @@ app.get('/api/v1/tours/:id', getTour);
 
 // POST method -> create new data
 // send data from client to server, data available on req -> req hold all data
-// express doesnt put body data on req -> use middleware
-app.post('/api/v1/tours/', createTour);
+
+app.post('/api/v1/tours', createTour);
 
 // PATCH method update data (only expect properties)
 app.patch('/api/v1/tours/:id', updateTour);
@@ -125,8 +128,19 @@ app.patch('/api/v1/tours/:id', updateTour);
 // DETELE method delete data
 app.delete('/api/v1/tours/:id', deleteTour);
 
+// in case change ver or resource name
+app
+  .route('/api/v1/tours')
+  .get(getAllTours)
+  .post(createTour);
 
-// START SERVER
+app
+  .route('/api/v1/tours/:id')
+  .get(getTour)
+  .patch(createTour)
+  .delete(deleteTour);
+
+// START SERVER``
 const port = 3000;
 // listening to req
 app.listen(port, () => {
