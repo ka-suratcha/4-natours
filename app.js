@@ -7,21 +7,36 @@
 const fs = require('fs');
 // all express config in app.js
 const express = require('express');
-
-// add express method to app
-const app = express();
+const { request } = require('http');
 
 // MIDDLEWARE
-// in the middle of req and res (the step go through)
-// modify the incoming req data before res
+// in the middle of req and res (between the step) for modify the incoming req data before res
+// add express method to app
+// route is kind of middleware themselves
+const app = express();
 app.use(express.json()); // data from body is added req obj
+
+// create middleware
+app.use((req, res, next) => {
+  console.log('Hello from the middleware!');
+  next();
+});
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
 // EXPORT route handler
 const getAllTours = (req, res) => {
+  // use var from middleware
+  console.log(req.requestTime);
+
   res.status(200).json({  // JSON formatiing standard
     status: 'success',
+    requestAt: req.requestTime,
     results: tours.length, // num of result (tours is JS object)
     data: { // envelope for data
       tours: tours
@@ -39,12 +54,14 @@ const getTour = (req, res) => {
   if (!tour) {
     return res.status(404).json({
       status: 'failed',
+      requestAt: req.requestTime,
       message: 'invaild ID'
     });
   }
 
   res.status(200).json({  // JSON formatiing standard
     status: 'success',
+    requestAt: req.requestTime,
     data: { // envelope for data
       tours: tour
     }
@@ -63,6 +80,7 @@ const createTour = (req, res) => {
   fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`, JSON.stringify(tours), err => { // overwrite
     res.status(201).json({
       status: "success",
+      requestAt: req.requestTime,
       data: {
         tour: newTour
       }
@@ -84,6 +102,7 @@ const updateTour = (req, res) => {
 
   res.status(200).json({
     status: 'success',
+    requestAt: req.requestTime,
     data: '<update tour>'
   });
 };
