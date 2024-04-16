@@ -5,19 +5,21 @@
 // POST send data from client to server, req hold all data
 
 // all express config in app.js
+
+// middleware -> in the middle of req and res (between the step) for modify the incoming req data before res
+// route is kind of middleware themselves
+
+// REQ 3th PARTY MODULE
 const express = require('express');
 const morgan = require('morgan');
 
+// REQ OWN MOUDLE
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
-
 
 const app = express();
 
 // 1.) MIDDLEWARE
-// in the middle of req and res (between the step) for modify the incoming req data before res
-// add express method to app
-// route is kind of middleware themselves
 app.use(morgan('dev'));
 app.use(express.json()); // data from body is added req obj
 
@@ -32,12 +34,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// ROUTE
-// mounting ther router (cant use route before declare)
+// 2.) ROUTE and ROUTE HANDLER
+// mounting the router (cant use route before declare)
 app.use('/api/v1/tours', tourRouter); // this is middleware, use for specific route
 app.use('/api/v1/users', userRouter);
 
-// 4.) START SERVER
+// 3.) START SERVER
 const port = 3000;
 // listening to req
 app.listen(port, () => {
