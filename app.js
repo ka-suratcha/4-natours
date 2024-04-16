@@ -1,5 +1,5 @@
 // rn file-based API (read data from file) later store data in DB
-// status code 200 completed, 201 created
+// status code 200 completed, 201 created. 204 no content
 
 const fs = require('fs');
 // all express config in app.js
@@ -92,6 +92,46 @@ app.patch('/api/v1/tours/:id', (req, res) => {
   res.status(200).json({
     status: 'success',
     data: '<update tour>'
+  })
+})
+
+// PATCH method update data (only expect properties)
+app.patch('/api/v1/tours/:id', (req, res) => {
+
+  // find el where id = one that get from params (URL)
+  const id = req.params.id * 1;
+  const tour = tours.find(el => el.id === id)
+
+  if (!tour) {
+    return res.status(404).json({
+      status: 'failed',
+      message: 'invaild ID'
+    })
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: '<update tour>'
+  })
+})
+
+// DETELE method delete data
+app.delete('/api/v1/tours/:id', (req, res) => {
+
+  // find el where id = one that get from params (URL)
+  const id = req.params.id * 1;
+  const tour = tours.find(el => el.id === id)
+
+  if (!tour) {
+    return res.status(404).json({
+      status: 'failed',
+      message: 'invaild ID'
+    })
+  }
+
+  res.status(204).json({
+    status: 'success',
+    data: null
   })
 })
 
