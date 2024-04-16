@@ -128,38 +128,72 @@ const deleteTour = (req, res) => {
   });
 };
 
+const getAllUsers = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yer deined'
+  });
+};
+const getUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yer deined'
+  });
+};
+const createUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yer deined'
+  });
+};
+const updateUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yer deined'
+  });
+};
+const deleteUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yer deined'
+  });
+};
+
 // 3.) ROUNTING determine how app res to certain client req and URL
 // method, URL root (endpoint), status code, resource
 // good to specify the API ver (in case changes -> without breaking who still use old ver) [branch off]
 
-// GET method -> get data
-app.get('/api/v1/tours', getAllTours);
+// definition
+const tourRouter = express.Router(); // create new route and save to var
+const userRouter = express.Router();
 
-// api with passing variable
-app.get('/api/v1/tours/:id', getTour);
-
-// POST method -> create new data
-// send data from client to server, data available on req -> req hold all data
-
-app.post('/api/v1/tours', createTour);
-
-// PATCH method update data (only expect properties)
-app.patch('/api/v1/tours/:id', updateTour);
-
-// DETELE method delete data
-app.delete('/api/v1/tours/:id', deleteTour);
-
-// in case change ver or resource name
-app
-  .route('/api/v1/tours')
+// TOUR
+tourRouter
+  .route('/') // tourRouteer only run on /api/v1/tours
   .get(getAllTours)
   .post(createTour);
 
-app
-  .route('/api/v1/tours/:id')
+tourRouter
+  .route('/:id')
   .get(getTour)
-  .patch(createTour)
+  .patch(updateTour)
   .delete(deleteTour);
+
+// USER
+userRouter
+  .route('/')
+  .get(getAllUsers)
+  .post(createUser);
+
+userRouter
+  .route('/:id')
+  .get(getUser)
+  .patch(updateUser)
+  .delete(deleteUser);
+
+// mounting ther router (cant use route before declare)
+app.use('/api/v1/tours', tourRouter); // this is middleware, use for specific route
+app.use('/api/v1/users', userRouter);
 
 // 4.) START SERVER
 const port = 3000;
