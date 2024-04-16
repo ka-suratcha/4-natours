@@ -7,13 +7,15 @@
 const fs = require('fs');
 // all express config in app.js
 const express = require('express');
-const { request } = require('http');
+const morgan = require('morgan');
 
-// MIDDLEWARE
+const app = express();
+
+// 1.) MIDDLEWARE
 // in the middle of req and res (between the step) for modify the incoming req data before res
 // add express method to app
 // route is kind of middleware themselves
-const app = express();
+app.use(morgan('dev'));
 app.use(express.json()); // data from body is added req obj
 
 // create middleware
@@ -29,7 +31,7 @@ app.use((req, res, next) => {
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
-// EXPORT route handler
+// 2.) ROUTE HANDLER
 const getAllTours = (req, res) => {
   // use var from middleware
   console.log(req.requestTime);
@@ -126,7 +128,7 @@ const deleteTour = (req, res) => {
   });
 };
 
-//ROUNTING determine how app res to certain client req and URL
+// 3.) ROUNTING determine how app res to certain client req and URL
 // method, URL root (endpoint), status code, resource
 // good to specify the API ver (in case changes -> without breaking who still use old ver) [branch off]
 
@@ -159,7 +161,7 @@ app
   .patch(createTour)
   .delete(deleteTour);
 
-// START SERVER``
+// 4.) START SERVER
 const port = 3000;
 // listening to req
 app.listen(port, () => {
