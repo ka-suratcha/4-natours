@@ -39,10 +39,4 @@ app.use((req, res, next) => {
 app.use('/api/v1/tours', tourRouter); // this is middleware, use for specific route
 app.use('/api/v1/users', userRouter);
 
-// 3.) START SERVER
-const port = 3000;
-// listening to req
-app.listen(port, () => {
-  console.log(`app running on port ${port}...`);
-
-});
+module.exports = app;
