@@ -4,14 +4,23 @@ const Tour = require('./../models/tourModel');
 
 // == ROUTE HANDLER
 exports.getAllTours = async (req, res) => {
-  // use var from middleware
-  console.log(req.requestTime);
-
   try {
-    const tours = await Tour.find();
+    // == BUILD QUERY
+    // have to do hard copy cuz JS, when set a var in to another obj, that new var is a reference to that original obj
+    const queryObj = { ...req.query }; // shallow copy of req.query, create obj out of that
+    const excludedFields = ['page', 'sort', 'limit', 'fields']; // create array of all fields that want to exculde
 
-    console.log(tours);
+    // remove these field from query obj by loop over
+    excludedFields.forEach((el) => delete queryObj[el]); // delete the field with the name of el
 
+    console.log(req.query, queryObj);
+
+    const query = Tour.find(queryObj); // no way later to implementing other feature -> save Tour.find(query)
+
+    // == EXECUTE QUERY
+    const tours = await Tour.find(queryObj); // find with query that already exculde field
+
+    // == SEND RESPONE
     res.status(200).json({
       status: 'success',
       requestAt: req.requestTime,
