@@ -3,33 +3,54 @@
 const Tour = require('./../models/tourModel');
 
 // == ROUTE HANDLER
-exports.getAllTours = (req, res) => {
+exports.getAllTours = async (req, res) => {
   // use var from middleware
   console.log(req.requestTime);
 
-  res.status(200).json({
-    // JSON formatiing standard
-    status: 'success',
-    requestAt: req.requestTime,
-    results: null, // num of result (tours is JS object)
-    data: {
-      tour: null,
-    },
-  });
+  try {
+    const tours = await Tour.find();
+
+    console.log(tours);
+
+    res.status(200).json({
+      status: 'success',
+      requestAt: req.requestTime,
+      results: tours.length, // num of result (tours is JS object)
+      data: {
+        tours,
+      },
+    });
+  } catch (err) {
+    console.log(`ERROR!!! : ${err}`);
+
+    res.status(400).json({
+      status: 'failed',
+      message: 'Invaild data sent',
+    });
+  }
 };
 
-exports.getTour = (req, res) => {
+exports.getTour = async (req, res) => {
   console.log(req.params);
 
-  res.status(200).json({
-    // JSON formatiing standard
-    status: 'success',
-    requestAt: req.requestTime,
-    data: {
-      // envelope for data
-      tours: null,
-    },
-  });
+  try {
+    const tour = await Tour.findById(req.params.id); // key
+
+    res.status(200).json({
+      status: 'success',
+      requestAt: req.requestTime,
+      data: {
+        tour,
+      },
+    });
+  } catch (err) {
+    console.log(`ERROR!!! : ${err}`);
+
+    res.status(400).json({
+      status: 'failed',
+      message: 'Invaild data sent',
+    });
+  }
 };
 
 exports.createTour = async (req, res) => {
@@ -50,7 +71,7 @@ exports.createTour = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(`ERROR!!! : ${err.errmsg}`);
+    console.log(`ERROR!!! : ${err}`);
 
     res.status(400).json({
       status: 'failed',
