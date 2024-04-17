@@ -27,22 +27,35 @@ mongoose
 // SCHEMA: describe data and validator
 const tourSchema = new mongoose.Schema({
   name: {
-    Type: String,
-    required: [true, 'A Tour must have a name'],
+    type: String,
+    required: [true, 'A tour must have a name'],
     unique: true,
   },
   rating: {
-    Type: Number,
+    type: Number,
     default: 4.5,
   },
   price: {
-    Type: Number,
-    required: [true, 'A Tour must have a price'],
+    type: Number,
+    required: [true, 'A tour must have a price'],
   },
 });
 
 // MODEL -> name of model and schema
-const Tour = mongoose.model('Tour', tourSchema) // create tour out or schema
+const Tour = mongoose.model('Tour', tourSchema); // create tour out or schema
+
+// DOCUMENT
+const testTour = new Tour({
+  name: 'The testtt',
+});
+testTour
+  .save() // reture promise
+  .then((doc) => {
+    console.log(doc);
+  })
+  .catch((err) => {
+    console.log('ERROR !!!!!: ', err);
+  });
 
 // ENVIRONMENT
 console.log(`Environment: ${app.get('env')}`);
