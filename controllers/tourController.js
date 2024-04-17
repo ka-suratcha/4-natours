@@ -26,7 +26,12 @@ exports.getAllTours = async (req, res) => {
     console.log('\nreq.query that exculded and add $:');
     console.log(JSON.parse(queryStr));
 
-    const query = Tour.find(JSON.parse(queryStr)); // no way later to implementing other feature -> save Tour.find(query)
+    let query = Tour.find(JSON.parse(queryStr)); // no way later to implementing other feature -> save Tour.find(query)
+
+    // == 2.) Sorting
+    if (req.query.sort) {
+      query = query.sort(req.query.sort);
+    }
 
     // == EXECUTE QUERY
     const tours = await query; // find with query that already exculde field
