@@ -15,7 +15,7 @@ const router = express.Router(); // create new route and save to var
 router
   .route('/') // tourRouteer only run on /api/v1/tours
   .get(tourController.getAllTours)
-  .post(tourController.checkReqBody, tourController.createTour);
+  .post(tourController.createTour);
 
 router
   .route('/:id')

@@ -2,19 +2,6 @@
 // controller is where edit tour happen
 const Tour = require('./../models/tourModel');
 
-// == MIDDLEWARE
-exports.checkReqBody = (req, res, next) => {
-  console.log(req.body);
-
-  if (!req.body.name || !req.body.price) {
-    return res.status(404).json({
-      status: 'failed',
-      message: 'Missing name or price',
-    });
-  }
-  next();
-};
-
 // == ROUTE HANDLER
 exports.getAllTours = (req, res) => {
   // use var from middleware
@@ -45,14 +32,31 @@ exports.getTour = (req, res) => {
   });
 };
 
-exports.createTour = (req, res) => {
-  res.status(201).json({
-    status: 'success',
-    requestAt: req.requestTime,
-    data: {
-      tour: null,
-    },
-  });
+exports.createTour = async (req, res) => {
+  // create new tour based on data that come in from body
+
+  // const newTour = new Tour({})
+  // newTour.save // call method on doc
+
+  try {
+    // use tour and call method directly then pass data that we want to use with db
+    // create doc from req.body according to schema
+    const newTour = await Tour.create(req.body); // return promise
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        tour: newTour,
+      },
+    });
+  } catch (err) {
+    console.log(`ERROR!!! : ${err.errmsg}`);
+
+    res.status(400).json({
+      status: 'failed',
+      message: 'Invaild data sent',
+    });
+  }
 };
 
 exports.updateTour = (req, res) => {
