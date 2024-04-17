@@ -5,7 +5,11 @@ const Tour = require('./../models/tourModel');
 // == ROUTE HANDLER
 exports.getAllTours = async (req, res) => {
   try {
+    console.log('\nreq.query:');
+    console.log(req.query);
+
     // == BUILD QUERY
+    // == 1A.) Filltering
     // have to do hard copy cuz JS, when set a var in to another obj, that new var is a reference to that original obj
     const queryObj = { ...req.query }; // shallow copy of req.query, create obj out of that
     const excludedFields = ['page', 'sort', 'limit', 'fields']; // create array of all fields that want to exculde
@@ -13,12 +17,19 @@ exports.getAllTours = async (req, res) => {
     // remove these field from query obj by loop over
     excludedFields.forEach((el) => delete queryObj[el]); // delete the field with the name of el
 
-    console.log(req.query, queryObj);
+    // == 1B.) ADV FILTERRING
+    console.log('\nreq.query that exculded:');
+    console.log(queryObj);
 
-    const query = Tour.find(queryObj); // no way later to implementing other feature -> save Tour.find(query)
+    let queryStr = JSON.stringify(queryObj); // JS Obj to JSON String, let cuz edit
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`); // reaplce $ in front of these -> for MongoDB
+    console.log('\nreq.query that exculded and add $:');
+    console.log(JSON.parse(queryStr));
+
+    const query = Tour.find(JSON.parse(queryStr)); // no way later to implementing other feature -> save Tour.find(query)
 
     // == EXECUTE QUERY
-    const tours = await Tour.find(queryObj); // find with query that already exculde field
+    const tours = await query; // find with query that already exculde field
 
     // == SEND RESPONE
     res.status(200).json({
@@ -30,11 +41,11 @@ exports.getAllTours = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(`ERROR!!! : ${err}`);
+    console.log(`\nERROR!!! : ${err}`);
 
     res.status(400).json({
       status: 'failed',
-      message: 'Invaild data sent',
+      message: err,
     });
   }
 };
@@ -53,7 +64,7 @@ exports.getTour = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(`ERROR!!! : ${err}`);
+    console.log(`\nERROR!!! : ${err}`);
 
     res.status(400).json({
       status: 'failed',
@@ -80,7 +91,7 @@ exports.createTour = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(`ERROR!!! : ${err}`);
+    console.log(`\nERROR!!! : ${err}`);
 
     res.status(400).json({
       status: 'failed',
@@ -105,7 +116,7 @@ exports.updateTour = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(`ERROR!!! : ${err}`);
+    console.log(`\nERROR!!! : ${err}`);
 
     res.status(400).json({
       status: 'failed',
@@ -124,7 +135,7 @@ exports.deleteTour = async (req, res) => {
       data: null,
     });
   } catch (err) {
-    console.log(`ERROR!!! : ${err}`);
+    console.log(`\nERROR!!! : ${err}`);
 
     res.status(400).json({
       status: 'failed',
