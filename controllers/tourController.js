@@ -5,28 +5,56 @@ const Tour = require('./../models/tourModel');
 // == ROUTE HANDLER
 exports.getAllTours = async (req, res) => {
   try {
-    console.log('\nreq.query:');
-    console.log(req.query);
-
     // == BUILD QUERY
     // == 1A.) Filltering
     // have to do hard copy cuz JS, when set a var in to another obj, that new var is a reference to that original obj
     const queryObj = { ...req.query }; // shallow copy of req.query, create obj out of that
     const excludedFields = ['page', 'sort', 'limit', 'fields']; // create array of all fields that want to exculde
 
-    // remove these field from query obj by loop over
+    // remove fields from query obj by loop over
     excludedFields.forEach((el) => delete queryObj[el]); // delete the field with the name of el
 
     // == 1B.) ADV FILTERRING
+    // MongonDB -> { el { '$lt': 'num' } }
+    let queryStr = JSON.stringify(queryObj); // JS Obj to JSON String, let cuz edit
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`); // reaplce $ in front of these -> for MongoDB
+
+    let query = Tour.find(JSON.parse(queryStr)); // no way later to implementing other feature -> save Tour.find(query)
+
+    // query request
+    console.log('\nreq.query:');
+    console.log(req.query);
+
+    // query that exculded
     console.log('\nreq.query that exculded:');
     console.log(queryObj);
 
-    let queryStr = JSON.stringify(queryObj); // JS Obj to JSON String, let cuz edit
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`); // reaplce $ in front of these -> for MongoDB
-    console.log('\nreq.query that exculded and add $:');
+    // query that has finished formatting of MongoDB to understand
+    console.log('\nreq.query that exculded and add $ (Filttering):');
     console.log(JSON.parse(queryStr));
 
-    const query = Tour.find(JSON.parse(queryStr)); // no way later to implementing other feature -> save Tour.find(query)
+    // == 2.) Sorting
+    if (req.query.sort) {
+      // Mongoose -> sort(el1 el2)
+      const sortBy = req.query.sort.split(',').join(' '); //split String with comma -> array of all the string
+
+      query = query.sort(sortBy);
+
+      // query request from sort
+      console.log('\nreq.query.sort:');
+      console.log(req.query.sort);
+
+      // get each var of query as array
+      console.log('\nreq.query.sort.with.split:');
+      console.log(req.query.sort.split(','));
+
+      // get each var of query as array then join it tgt make it become String of Mongoose to understand
+      console.log('\nreq.query.sort.split.join (sorting):');
+      console.log(req.query.sort.split(',').join(' '));
+
+    } else { // default
+      query = query.sort('-createdAt');
+    }
 
     // == EXECUTE QUERY
     const tours = await query; // find with query that already exculde field
