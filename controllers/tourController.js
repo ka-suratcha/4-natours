@@ -19,6 +19,18 @@ exports.checkID = (req, res, next, val) => {
   next();
 };
 
+exports.checkReqBody = (req, res, next) => {
+  console.log(req.body);
+
+  if (!req.body.name || !req.body.price) {
+    return res.status(404).json({
+      status: 'failed',
+      message: 'Missing name or price',
+    });
+  }
+  next();
+};
+
 // ROUTE HANDLER
 exports.getAllTours = (req, res) => {
   // use var from middleware
@@ -51,8 +63,6 @@ exports.getTour = (req, res) => {
 };
 
 exports.createTour = (req, res) => {
-  console.log(req.body);
-
   // find id to create new data (usually db takes care of this)
   const newId = tours[tours.length - 1].id + 1; // length get num, -1 for get lastest index
   const newTour = Object.assign({ id: newId }, req.body); // merging 2 objects
@@ -60,7 +70,7 @@ exports.createTour = (req, res) => {
 
   // use async ver cuz rn we in callback func
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/../dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
     (err) => {
       // overwrite
