@@ -1,24 +1,8 @@
-// REQ BUILT-IN MOUDLE
-const fs = require('fs');
+// == REQ MODEL
+// controller is where edit tour happen
+const Tour = require('./../models/tourModel');
 
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
-);
-
-// MIDDLEWARE
-exports.checkID = (req, res, next, val) => {
-  const id = req.params.id * 1;
-  const tour = tours.find((el) => el.id === id);
-
-  if (!tour) {
-    return res.status(404).json({
-      status: 'failed',
-      message: 'invaild ID',
-    });
-  }
-  next();
-};
-
+// == MIDDLEWARE
 exports.checkReqBody = (req, res, next) => {
   console.log(req.body);
 
@@ -31,7 +15,7 @@ exports.checkReqBody = (req, res, next) => {
   next();
 };
 
-// ROUTE HANDLER
+// == ROUTE HANDLER
 exports.getAllTours = (req, res) => {
   // use var from middleware
   console.log(req.requestTime);
@@ -40,10 +24,9 @@ exports.getAllTours = (req, res) => {
     // JSON formatiing standard
     status: 'success',
     requestAt: req.requestTime,
-    results: tours.length, // num of result (tours is JS object)
+    results: null, // num of result (tours is JS object)
     data: {
-      // envelope for data
-      tours: tours,
+      tour: null,
     },
   });
 };
@@ -57,32 +40,19 @@ exports.getTour = (req, res) => {
     requestAt: req.requestTime,
     data: {
       // envelope for data
-      tours: tours[req.params.id],
+      tours: null,
     },
   });
 };
 
 exports.createTour = (req, res) => {
-  // find id to create new data (usually db takes care of this)
-  const newId = tours[tours.length - 1].id + 1; // length get num, -1 for get lastest index
-  const newTour = Object.assign({ id: newId }, req.body); // merging 2 objects
-  tours.push(newTour); // push new tour to tours obj
-
-  // use async ver cuz rn we in callback func
-  fs.writeFile(
-    `${__dirname}/../dev-data/data/tours-simple.json`,
-    JSON.stringify(tours),
-    (err) => {
-      // overwrite
-      res.status(201).json({
-        status: 'success',
-        requestAt: req.requestTime,
-        data: {
-          tour: newTour,
-        },
-      });
-    }
-  );
+  res.status(201).json({
+    status: 'success',
+    requestAt: req.requestTime,
+    data: {
+      tour: null,
+    },
+  });
 };
 
 exports.updateTour = (req, res) => {
