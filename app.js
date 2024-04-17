@@ -22,6 +22,7 @@ const app = express();
 // 1.) MIDDLEWARE
 app.use(morgan('dev'));
 app.use(express.json()); // data from body is added req obj
+app.use(express.static(`${__dirname}/public`));
 
 // create middleware
 app.use((req, res, next) => {
