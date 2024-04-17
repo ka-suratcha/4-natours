@@ -15,7 +15,7 @@ router.param('id', tourController.checkID);
 router
   .route('/') // tourRouteer only run on /api/v1/tours
   .get(tourController.getAllTours)
-  .post(tourController.createTour);
+  .post(tourController.checkReqBody, tourController.createTour);
 
 router
   .route('/:id')
