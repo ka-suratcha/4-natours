@@ -105,21 +105,9 @@ exports.updateTour = async (req, res) => {
   }
 };
 
-exports.deleteTour = async (req, res) => {
-  try {
-    await Tour.findByIdAndDelete(req.params.id); // key
-
-    res.status(204).json({
-      status: 'success',
-      requestAt: req.requestTime,
-      data: null
-    });
-  } catch (err) {
-    console.log(`ERROR!!! : ${err}`);
-
-    res.status(400).json({
-      status: 'failed',
-      message: 'Invaild data sent',
-    });
-  }
+exports.deleteTour = (req, res) => {
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
 };
