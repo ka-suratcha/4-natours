@@ -4,13 +4,12 @@ const Tour = require('./../models/tourModel');
 
 // == ROUTE HANDLER
 exports.getAllTours = async (req, res) => {
-  // use var from middleware
-  console.log(req.requestTime);
-
   try {
-    const tours = await Tour.find();
+    console.log(req.query); // get obj with data from query string
 
-    console.log(tours);
+    const tours = await Tour.find(req.query);
+
+    // console.log(tours);
 
     res.status(200).json({
       status: 'success',
