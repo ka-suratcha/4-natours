@@ -9,11 +9,11 @@
 // middleware -> in the middle of req and res (between the step) for modify the incoming req data before res
 // route is kind of middleware themselves
 
-// REQ 3th PARTY MODULE
+// == REQ 3th PARTY MODULE
 const express = require('express');
 const morgan = require('morgan');
 
-// REQ OWN MOUDLE
+// == REQ OWN MOUDLE
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
