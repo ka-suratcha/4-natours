@@ -197,12 +197,11 @@ exports.getMonthlyPlan = async (req, res) => {
           _id: { $month: '$startDates' }, // group by month
           numTourStarts: { $sum: 1 }, // counter
           tours: { $push: '$name' }, // get array of tour that start in this month
-          month: '$_id',
         },
       },
-      // {
-      //   $addFields: { month: '$_id' }, // and field month that show $_id var
-      // },
+      {
+        $addFields: { month: '$_id' }, // and field month that show $_id var
+      },
       {
         $project: {
           // not show _id
