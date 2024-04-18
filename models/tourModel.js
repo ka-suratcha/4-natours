@@ -110,10 +110,18 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
-tourSchema.post(/^find/, function (docs, next) {  // access to all docs
+tourSchema.post(/^find/, function (docs, next) {
+  // access to all docs
   console.log(`Query took ${Date.now() - this.start} ms!`);
 
   console.log(docs);
+  next();
+});
+
+// AGGREATION MIDDLEWARE
+tourSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  console.log(this.pipeline());
   next();
 });
 
