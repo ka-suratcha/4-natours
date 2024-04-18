@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 // SCHEMA: describe data and validator
 //mongoose.Schema can pass obj with th schema definition itself and obj for schema options
@@ -71,6 +72,29 @@ const tourSchema = new mongoose.Schema(
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
+
+// DOCUMENT MIDDLEWARE: runs before/after .save() and .create()
+
+// pre -> run before an actual event (save event)
+tourSchema.pre('save', function (next) {
+  // doc that is being saved
+  console.log(this); // point to currently processed doc (access to doc that is being processed)
+
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+// tourSchema.pre('save', function (next) {
+//   console.log('will save doc.......');
+//   next();
+// });
+
+// // post -> run after an acutual event
+// tourSchema.post('save', function (doc, next) {
+//   // doc that was just save to db
+//   console.log(doc);
+//   next();
+// });
 
 // MODEL -> name of model and schema
 const Tour = mongoose.model('Tour', tourSchema); // create tour out or schema
