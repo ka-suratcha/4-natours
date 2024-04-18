@@ -57,6 +57,10 @@ const tourSchema = new mongoose.Schema(
       select: false,
     },
     startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true }, // each time the data is outputed as JSON want to be true (viruals to be part of the output)
@@ -76,9 +80,10 @@ tourSchema.virtual('durationWeeks').get(function () {
 // DOCUMENT MIDDLEWARE: runs before/after .save() and .create()
 
 // pre -> run before an actual event (save event)
+// point to currently processed doc (access to doc that is being processed)
 tourSchema.pre('save', function (next) {
   // doc that is being saved
-  console.log(this); // point to currently processed doc (access to doc that is being processed)
+  console.log(this);
 
   this.slug = slugify(this.name, { lower: true });
   next();
@@ -95,6 +100,22 @@ tourSchema.pre('save', function (next) {
 //   console.log(doc);
 //   next();
 // });
+
+// QUERY MIDDLEWARE
+tourSchema.pre(/^find/, function (next) {
+  // all string that start with 'find'
+  // point to current query
+  this.find({ secretTour: { $ne: true } }); // find secretTouris true and hide it
+  this.start = Date.now();
+  next();
+});
+
+tourSchema.post(/^find/, function (docs, next) {  // access to all docs
+  console.log(`Query took ${Date.now() - this.start} ms!`);
+
+  console.log(docs);
+  next();
+});
 
 // MODEL -> name of model and schema
 const Tour = mongoose.model('Tour', tourSchema); // create tour out or schema
