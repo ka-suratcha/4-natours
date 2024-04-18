@@ -22,6 +22,7 @@ exports.getAllTours = async (req, res) => {
     let query = Tour.find(JSON.parse(queryStr)); // no way later to implementing other feature -> save Tour.find(query)
 
     // query request
+    console.log('\n=== Filltering ===');
     console.log('\nreq.query:');
     console.log(req.query);
 
@@ -41,6 +42,7 @@ exports.getAllTours = async (req, res) => {
       query = query.sort(sortBy);
 
       // query request from sort
+      console.log('\n=== Sorting ===');
       console.log('\nreq.query.sort:');
       console.log(req.query.sort);
 
@@ -51,11 +53,34 @@ exports.getAllTours = async (req, res) => {
       // get each var of query as array then join it tgt make it become String of Mongoose to understand
       console.log('\nreq.query.sort.split.join (sorting):');
       console.log(req.query.sort.split(',').join(' '));
-
-    } else { // default
+    } else {
+      // default
       query = query.sort('-createdAt');
     }
 
+    // == 3.) Field limiting
+    if (req.query.fields) {
+      // Mongoose -> sort(el1 el2)
+      const fields = req.query.fields.split(',').join(' ');
+
+      query = query.select(fields);
+
+      // query request from sort
+      console.log('\n=== Field limiting ===');
+      console.log('\nreq.query.fields:');
+      console.log(req.query.fields);
+
+      // get each var of query as array
+      console.log('\nreq.query.fields.with.split:');
+      console.log(req.query.fields.split(','));
+
+      // get each var of query as array then join it tgt make it become String of Mongoose to understand
+      console.log('\nreq.query.fields.split.join (fieldsing):');
+      console.log(req.query.fields.split(',').join(' '));
+      
+    } else {
+      query = query.select('-__v'); // - is exculding
+    }
     // == EXECUTE QUERY
     const tours = await query; // find with query that already exculde field
 
