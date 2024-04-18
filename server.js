@@ -6,8 +6,6 @@ dotenv.config({ path: './config.env' });
 
 const app = require('./app.js');
 
-dotenv.config({ patch: './config.env' });
-
 // == CONNECT TO DB
 const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
@@ -21,11 +19,11 @@ mongoose
     useFindAndModify: false,
   })
   .then(() => {
-    console.log('DB connection successfully');
+    console.log('\nDB connection successfully !!\n');
   });
 
 // == ENVIRONMENT
-console.log(`Environment: ${app.get('env')}`);
+console.log(`\nEnvironment: ${app.get('env')}\n`);
 // console.log(process.env);
 
 // == START SERVER

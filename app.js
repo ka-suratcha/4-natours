@@ -29,7 +29,7 @@ app.use(express.static(`${__dirname}/public`));
 
 // create middleware
 app.use((req, res, next) => {
-  console.log('Hello from the middleware!');
+  console.log('\nHello from the middleware!\n');
   next();
 });
 
