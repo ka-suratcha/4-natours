@@ -12,6 +12,10 @@ const router = express.Router(); // create new route and save to var
 // router.param('id', tourController.checkID);
 
 // ROUTER
+
+// run middleware manipulate the query obj
+router.route('/top-5-cheap').get(tourController.alisaTopTour, tourController.getAllTours)
+
 router
   .route('/') // tourRouteer only run on /api/v1/tours
   .get(tourController.getAllTours)
