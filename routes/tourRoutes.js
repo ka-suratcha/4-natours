@@ -19,6 +19,7 @@ router
   .get(tourController.alisaTopTour, tourController.getAllTours);
 
 router.route('/tour-stats').get(tourController.getTourStats);
+router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
 
 router
   .route('/') // tourRouteer only run on /api/v1/tours
