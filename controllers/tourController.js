@@ -136,3 +136,40 @@ exports.deleteTour = async (req, res) => {
     });
   }
 };
+
+exports.getTourStats = async (req, res) => {
+  try {
+    const stats = await Tour.aggregate([
+      {
+        $match: { ratingsAverage: { $gte: 4.5 } }, // get el that ratingsAverage is >= 4.5
+      },
+      {
+        $group: {
+          _id: { $toUpper: '$difficulty' }, // everything in 1 group -> can calculate the statistics for all tours tgt
+          numTours: { $sum: 1 }, // num of tour -> sum add 1 for each doc (each of doc thats go through pipeline will be added to cum counter)
+          numRatings: { $sum: '$ratingsQuantity' },
+          avgRating: { $avg: '$ratingsAverage' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+        },
+      },
+      {
+        $sort: { avgPrice: 1 },
+      },
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      requestAt: req.requestTime,
+      data: { stats },
+    });
+  } catch (err) {
+    console.log(`\nERROR!!! : ${err}`);
+
+    res.status(400).json({
+      status: 'failed',
+      message: err,
+    });
+  }
+};
