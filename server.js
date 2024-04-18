@@ -19,11 +19,11 @@ mongoose
     useFindAndModify: false,
   })
   .then(() => {
-    console.log('DB connection successfully');
+    console.log('\nDB connection successfully !!\n');
   });
 
 // == ENVIRONMENT
-console.log(`Environment: ${app.get('env')}`);
+console.log(`\nEnvironment: ${app.get('env')}\n`);
 // console.log(process.env);
 
 // == START SERVER
