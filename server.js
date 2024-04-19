@@ -19,7 +19,7 @@ mongoose
     useFindAndModify: false,
   })
   .then(() => {
-    console.log('\nDB connection successfully !!\n');
+    console.log('\nDB connection successfully !!');
   });
 
 // == ENVIRONMENT
