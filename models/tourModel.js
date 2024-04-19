@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 
+const validator = require('validator');
+
 // SCHEMA: describe data and validator
 //mongoose.Schema can pass obj with th schema definition itself and obj for schema options
 const tourSchema = new mongoose.Schema(
@@ -12,6 +14,7 @@ const tourSchema = new mongoose.Schema(
       trim: true,
       maxlength: [40, 'A tour name must have less or equal then 40 characters'],
       minlength: [10, 'A tour name must have more or equal then 10 characters'],
+      validate: [validator.isAlpha, 'Tour name must only contain characters'], // check if val only contain letters
     },
     slug: String,
     duration: {
