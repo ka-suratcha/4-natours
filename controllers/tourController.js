@@ -36,7 +36,7 @@ exports.getAllTours = async (req, res) => {
   } catch (err) {
     console.log(`\nERROR!!! : ${err}`);
 
-    res.status(400).json({
+    res.status(404).json({
       status: 'failed',
       message: err,
     });
@@ -68,10 +68,6 @@ exports.getTour = async (req, res) => {
 
 exports.createTour = async (req, res) => {
   // create new tour based on data that come in from body
-
-  // const newTour = new Tour({})
-  // newTour.save // call method on doc
-
   try {
     // use tour and call method directly then pass data that we want to use with db
     // create doc from req.body according to schema
@@ -84,11 +80,9 @@ exports.createTour = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(`\nERROR!!! : ${err}`);
-
     res.status(400).json({
       status: 'failed',
-      message: 'Invaild data sent',
+      message: err,
     });
   }
 };
@@ -111,9 +105,9 @@ exports.updateTour = async (req, res) => {
   } catch (err) {
     console.log(`\nERROR!!! : ${err}`);
 
-    res.status(400).json({
-      status: 'failed',
-      message: 'Invaild data sent',
+    res.status(404).json({
+      status: 'fail',
+      message: err,
     });
   }
 };
@@ -130,7 +124,7 @@ exports.deleteTour = async (req, res) => {
   } catch (err) {
     console.log(`\nERROR!!! : ${err}`);
 
-    res.status(400).json({
+    res.status(404).json({
       status: 'failed',
       message: 'Invaild data sent',
     });
@@ -168,7 +162,7 @@ exports.getTourStats = async (req, res) => {
   } catch (err) {
     console.log(`\nERROR!!! : ${err}`);
 
-    res.status(400).json({
+    res.status(404).json({
       status: 'failed',
       message: err,
     });
@@ -225,7 +219,7 @@ exports.getMonthlyPlan = async (req, res) => {
   } catch (err) {
     console.log(`\nERROR!!! : ${err}`);
 
-    res.status(400).json({
+    res.status(404).json({
       status: 'failed',
       message: err,
     });

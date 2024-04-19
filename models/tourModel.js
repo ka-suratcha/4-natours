@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 
+const validator = require('validator');
+
 // SCHEMA: describe data and validator
 //mongoose.Schema can pass obj with th schema definition itself and obj for schema options
 const tourSchema = new mongoose.Schema(
@@ -10,6 +12,9 @@ const tourSchema = new mongoose.Schema(
       required: [true, ' A tour must have a name'],
       unique: true,
       trim: true,
+      maxlength: [40, 'A tour name must have less or equal then 40 characters'],
+      minlength: [10, 'A tour name must have more or equal then 10 characters'],
+      validate: [validator.isAlpha, 'Tour name must only contain characters'], // check if val only contain letters
     },
     slug: String,
     duration: {
@@ -23,10 +28,16 @@ const tourSchema = new mongoose.Schema(
     difficulty: {
       type: String,
       rquired: [true, ' A tiur must have a difficulty'],
+      enum: {
+        values: ['easy', 'medium', 'difficult'],
+        message: 'Difficulty is either: easy, medium, difficult',
+      },
     },
     ratingsAverage: {
       type: Number,
       default: 4.5,
+      mix: [1, 'Rating must be above 1.0'],
+      max: [5, 'Rating must be below 5.0'],
     },
     ratingsQuantity: {
       type: Number,
@@ -36,7 +47,16 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       required: [true, ' A tour must have a price'],
     },
-    priceDiscount: Number,
+    priceDiscount: {
+      type: Number,
+      validate: {
+        validator: function (val) {
+          // this only points to current doc on NEW doc creation
+          return val < this.price; // this keyword only point to current doc when creating new doc => so not work on "update"
+        },
+        message: 'Discount price ({VALUE}) should be below regular price', // msg have access to var of field in current doc (internal to mongoose)
+      },
+    },
     summary: {
       type: String,
       trim: true,
