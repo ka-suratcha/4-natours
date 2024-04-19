@@ -44,7 +44,16 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       required: [true, ' A tour must have a price'],
     },
-    priceDiscount: Number,
+    priceDiscount: {
+      type: Number,
+      validate: {
+        validator: function (val) {
+          // this only points to current doc on NEW doc creation
+          return val < this.price; // this keyword only point to current doc when creating new doc => so not work on "update"
+        },
+        message: 'Discount price ({VALUE}) should be below regular price', // msg have access to var of field in current doc (internal to mongoose)
+      },
+    },
     summary: {
       type: String,
       trim: true,
