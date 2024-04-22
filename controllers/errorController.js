@@ -16,7 +16,6 @@ const handleDuplicateFieldsDB = (err) => {
 
 const handleValidationErrorDB = (err) => {
   const errors = Object.values(err.errors).map((el) => el.message); // use Object.values to loop over object then use map go through each el message
-  console.log(errors);
 
   const message = `Invalid input data. ${errors.join('. ')}`;
   return new AppError(message, 400);
@@ -60,12 +59,13 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
-    let error = Object.create(err);
+    let error = { ...err };
 
-    if (error.name === 'CastError') error = handleCastErrorDB(error); //return new appError
+    if (error.name === 'CastError') error = handleCastErrorDB(error);
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
-    if (err.name === 'ValidationError') error = handleValidationErrorDB(error);
+    if (error.name === 'ValidationError')
+      error = handleValidationErrorDB(error);
 
-    sendErrorProd(error, res); // send error
+    sendErrorProd(error, res);
   }
 };
