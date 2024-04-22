@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 
-const validator = require('validator');
+// const validator = require('validator');
 
 // == SCHEMA: describe data and validator
 //mongoose.Schema can pass obj with th schema definition itself and obj for schema options
@@ -136,7 +136,7 @@ tourSchema.pre('aggregate', function (next) {
   next();
 });
 
-// MODEL -> name of model and schema
+// MODEL -> name of model and schema (create model out of the schema)
 const Tour = mongoose.model('Tour', tourSchema); // create tour out or schema
 
 module.exports = Tour;
