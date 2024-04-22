@@ -1,4 +1,11 @@
 // GLOBAL HANDLER (central place)
+const AppError = require('./../utils/appError');
+
+const handleCastErrorDB = (err) => {
+  const message = `Invalid ${err.path}: ${err.value}.`;
+  return new AppError(message, 400);
+};
+
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -9,18 +16,19 @@ const sendErrorDev = (err, res) => {
 };
 
 const sendErrorProd = (err, res) => {
-    // Operational, trusted error: send message to client
+  // Operational, trusted error: send message to client
   if (err.isOperational) {
     res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
     });
-    // Programming or other unknown error: dont leak error details
-  } else {
-    // 1. Log error
-    console.error('ERROR !!!!', err);
 
-    // 2. send generate message
+    // Programming or other unknown error: don't leak error details
+  } else {
+    // 1) Log error
+    console.error('ERROR 💥', err);
+
+    // 2) Send generic message
     res.status(500).json({
       status: 'error',
       message: 'Something went very wrong!',
@@ -28,6 +36,7 @@ const sendErrorProd = (err, res) => {
   }
 };
 
+// define these 4 argument Express will automatically recognize it as error handling middleware
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
@@ -35,6 +44,9 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
-    sendErrorProd(err, res);
+    let error = Object.create(err);
+
+    if (error.name === 'CastError') error = handleCastErrorDB(error); //return new appError
+    sendErrorProd(error, res); // send error
   }
 };

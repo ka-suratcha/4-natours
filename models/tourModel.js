@@ -83,7 +83,8 @@ const tourSchema = new mongoose.Schema(
     },
   },
   {
-    toJSON: { virtuals: true }, // each time the data is outputed as JSON want to be true (viruals to be part of the output)
+    // make viruals to be part of the output
+    toJSON: { virtuals: true }, // each time the data is outputed as JSON want to be true
     toObject: { virtuals: true }, // when data get outputted as obj
   }
 );
@@ -128,7 +129,7 @@ tourSchema.post(/^find/, function (docs, next) {
   next();
 });
 
-// AGGREATION MIDDLEWARE
+// AGGREGATION MIDDLEWARE
 tourSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
   console.log(this.pipeline());

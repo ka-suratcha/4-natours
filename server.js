@@ -1,6 +1,9 @@
 // import app or other related to our app
+
+// 3TH PARTY MODULES
 const mongoose = require('mongoose');
 
+// OWN MODULES
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 
