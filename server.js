@@ -20,10 +20,9 @@ mongoose
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
+    useUnifiedTopology: true,
   })
-  .then(() => {
-    console.log('\nDB connection successfully !!');
-  });
+  .then(() => console.log('DB connection successful!'));
 
 // == ENVIRONMENT
 console.log(`\nEnvironment: ${app.get('env')}\n`);
@@ -32,6 +31,15 @@ console.log(`\nEnvironment: ${app.get('env')}\n`);
 // == START SERVER
 const port = process.env.PORT || 3000;
 // listening to req
-app.listen(port, () => {
-  console.log(`app running on port ${port}...`);
+const server = app.listen(port, () => {
+  console.log(`App running on port ${port}...`);
+});
+
+// == listening to 'unhandler rejection' event allows us to handle all the errors that occur in asynchoronuse
+process.on('unhandledRejection', (err) => {
+  console.log('UNHANDLED REJECTION! 💥 Shutting down...');
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
 });
