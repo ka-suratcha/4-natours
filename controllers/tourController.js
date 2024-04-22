@@ -1,7 +1,10 @@
 // == REQ MODEL
 // controller is where edit tour happen
-const AppError = require('../utils/appError');
+
+// import model
 const Tour = require('./../models/tourModel');
+
+const AppError = require('../utils/appError');
 const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 

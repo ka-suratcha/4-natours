@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
   },
   passwordConfirm: {
     type: String,
-    required: [true, 'Please comfirm password'],
+    required: [true, 'Please confirm password'],
   },
 });
 

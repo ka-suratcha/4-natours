@@ -9,7 +9,11 @@ dotenv.config({ path: './config.env' });
 
 process.on('uncaughtException', (err) => {
   console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
-  console.log(err.name, err.message);
+  if (process.env.NODE_ENV === 'development') {
+    console.log(err);
+  } else if (process.env.NODE_ENV === 'production') {
+    console.log(err.name, err.message);
+  }
   process.exit(1);
 });
 
@@ -44,7 +48,11 @@ const server = app.listen(port, () => {
 // == listening to 'unhandler rejection' event allows us to handle all the errors that occur in asynchoronuse
 process.on('unhandledRejection', (err) => {
   console.log('UNHANDLED REJECTION! 💥 Shutting down...');
-  console.log(err.name, err.message);
+  if (process.env.NODE_ENV === 'development') {
+    console.log(err);
+  } else if (process.env.NODE_ENV === 'production') {
+    console.log(err.name, err.message);
+  }
   server.close(() => {
     process.exit(1);
   });
