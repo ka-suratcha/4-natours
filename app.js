@@ -49,7 +49,6 @@ app.all('*', (req, res, next) => {
 });
 
 // GLOBAL HANDLER (central place)
-// define these 4 augument Express will automatically recognize it as error handling middleware
 app.use(globalErrorHnadler);
 
 module.exports = app;
