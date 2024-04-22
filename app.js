@@ -14,6 +14,9 @@ const express = require('express');
 const morgan = require('morgan');
 
 // == REQ OWN MOUDLE
+const AppError = require('./utils/appError');
+const globalErrorHnadler = require('./controllers/errorController');
+
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
@@ -27,12 +30,6 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json()); // data from body is added req obj
 app.use(express.static(`${__dirname}/public`));
 
-// create middleware
-app.use((req, res, next) => {
-  console.log('\nHello from the middleware!\n');
-  next();
-});
-
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
@@ -42,5 +39,17 @@ app.use((req, res, next) => {
 // mounting the router (cant use route before declare)
 app.use('/api/v1/tours', tourRouter); // this is middleware, use for specific route
 app.use('/api/v1/users', userRouter);
+
+// HANDLER FOR UNDEFINED ROUTE
+// able to reach this point mean current route isnt defined
+// make it run for all the method, all() = all method, * = stand of everything
+app.all('*', (req, res, next) => {
+  // pass error, applies to every middleware -> skip all middleware stack and send to global error handling middleware
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+// GLOBAL HANDLER (central place)
+// define these 4 augument Express will automatically recognize it as error handling middleware
+app.use(globalErrorHnadler);
 
 module.exports = app;

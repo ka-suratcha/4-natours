@@ -3,7 +3,7 @@ const slugify = require('slugify');
 
 const validator = require('validator');
 
-// SCHEMA: describe data and validator
+// == SCHEMA: describe data and validator
 //mongoose.Schema can pass obj with th schema definition itself and obj for schema options
 const tourSchema = new mongoose.Schema(
   {
@@ -14,7 +14,7 @@ const tourSchema = new mongoose.Schema(
       trim: true,
       maxlength: [40, 'A tour name must have less or equal then 40 characters'],
       minlength: [10, 'A tour name must have more or equal then 10 characters'],
-      validate: [validator.isAlpha, 'Tour name must only contain characters'], // check if val only contain letters
+      // validate: [validator.isAlpha, 'Tour name must only contain characters'], // check if val only contain letters
     },
     slug: String,
     duration: {
@@ -27,7 +27,7 @@ const tourSchema = new mongoose.Schema(
     },
     difficulty: {
       type: String,
-      rquired: [true, ' A tiur must have a difficulty'],
+      rquired: [true, ' A tour must have a difficulty'],
       enum: {
         values: ['easy', 'medium', 'difficult'],
         message: 'Difficulty is either: easy, medium, difficult',
@@ -88,7 +88,7 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
-// VIRTUAL
+// == VIRTUAL
 // cant use in query cuz technically not part of db
 // can done this each time after we query ex. controller but not best practice cuz keep business logic and application logiv asmuch sepatated as possible
 
@@ -96,6 +96,8 @@ const tourSchema = new mongoose.Schema(
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
+
+// == MIDDLEWARE
 
 // DOCUMENT MIDDLEWARE: runs before/after .save() and .create()
 
@@ -109,18 +111,6 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
-// tourSchema.pre('save', function (next) {
-//   console.log('will save doc.......');
-//   next();
-// });
-
-// // post -> run after an acutual event
-// tourSchema.post('save', function (doc, next) {
-//   // doc that was just save to db
-//   console.log(doc);
-//   next();
-// });
-
 // QUERY MIDDLEWARE
 tourSchema.pre(/^find/, function (next) {
   // all string that start with 'find'
@@ -132,7 +122,7 @@ tourSchema.pre(/^find/, function (next) {
 
 tourSchema.post(/^find/, function (docs, next) {
   // access to all docs
-  console.log(`Query took ${Date.now() - this.start} ms!`);
+  console.log(`Query took ${Date.now() - this.start} ms!\n`);
 
   console.log(docs);
   next();
