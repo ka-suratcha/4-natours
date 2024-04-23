@@ -22,15 +22,15 @@ class APIFeatures {
     // dont want to query tourd directly -> add to the query that already have
     this.query = this.query.find(JSON.parse(queryStr));
 
-    console.log(
-      '\n========== Filltering ==========\n- req.query:',
-      this.queryString,
-      '\n\n- req.query that exculded:\t\t\t\t',
-      queryObj,
-      '\n- req.query that exculded and add $ (Filttering):\t',
-      queryStr,
-      '\n'
-    );
+    // console.log(
+    //   '\n========== Filltering ==========\n- req.query:',
+    //   this.queryString,
+    //   '\n\n- req.query that exculded:\t\t\t\t',
+    //   queryObj,
+    //   '\n- req.query that exculded and add $ (Filttering):\t',
+    //   queryStr,
+    //   '\n'
+    // );
 
     return this;
   }
@@ -44,15 +44,16 @@ class APIFeatures {
       this.query = this.query.sort(sortBy);
 
       // query request from sort
-      console.log(
-        '\n========== Sorting ==========\n- req.query.sort:\t\t\t',
-        this.queryString.sort,
-        '\n- req.query.sort.with.split:\t\t',
-        this.queryString.sort.split(','),
-        '\n- req.query.sort.split.join (Sorting):\t',
-        this.queryString.sort.split(',').join(' '),
-        '\n'
-      );
+      // console.log(
+      //   '\n========== Sorting ==========\n- req.query.sort:\t\t\t',
+      //   this.queryString.sort,
+      //   '\n- req.query.sort.with.split:\t\t',
+      //   this.queryString.sort.split(','),
+      //   '\n- req.query.sort.split.join (Sorting):\t',
+      //   this.queryString.sort.split(',').join(' '),
+      //   '\n'
+      // );
+      
     } else {
       // default
       // query = query.sort('-__id');
@@ -69,15 +70,16 @@ class APIFeatures {
 
       this.query = this.query.select(fields);
 
-      console.log(
-        '\n========== Field limiting ==========\nreq.query.fields:\t\t\t\t',
-        this.queryString.fields,
-        '\nreq.query.fields.with.split\t\t\t',
-        this.queryString.fields.split(','),
-        '\nreq.query.fields.split.join (Fileding):\t\t',
-        this.queryString.fields.split(',').join(' '),
-        '\n'
-      );
+      // console.log(
+      //   '\n========== Field limiting ==========\nreq.query.fields:\t\t\t\t',
+      //   this.queryString.fields,
+      //   '\nreq.query.fields.with.split\t\t\t',
+      //   this.queryString.fields.split(','),
+      //   '\nreq.query.fields.split.join (Fileding):\t\t',
+      //   this.queryString.fields.split(',').join(' '),
+      //   '\n'
+      // );
+
     } else {
       this.query = this.query.select('-__v'); // - is exculding
     }
@@ -97,15 +99,16 @@ class APIFeatures {
 
     // page that was req doesnt contain any data (dont existed) -> not really need error
 
-    console.log(
-      '\n========== Pagination ==========\npage:\t',
-      this.queryString.page * 1 || 1,
-      '\nlimit:\t',
-      this.queryString.limit * 1 || 100,
-      '\nskip:\t',
-      (page - 1) * limit,
-      '\n'
-    );
+    // console.log(
+    //   '\n========== Pagination ==========\npage:\t',
+    //   this.queryString.page * 1 || 1,
+    //   '\nlimit:\t',
+    //   this.queryString.limit * 1 || 100,
+    //   '\nskip:\t',
+    //   (page - 1) * limit,
+    //   '\n'
+    // );
+
     return this;
   }
 }

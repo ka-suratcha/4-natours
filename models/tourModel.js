@@ -125,7 +125,7 @@ tourSchema.post(/^find/, function (docs, next) {
   // access to all docs
   console.log(`Query took ${Date.now() - this.start} ms!\n`);
 
-  console.log(docs);
+  // console.log(docs);
   next();
 });
 
