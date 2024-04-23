@@ -73,10 +73,18 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   // 2.) validation token -> if someone manipulated the data
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET); // decoded from token
 
   // 3.) check if user still exists
-
+  const freshUser = await User.findById(decoded.id);
+  if (!freshUser) {
+    return next(
+      new AppError(
+        'The user belonging to this token does no longer exist.',
+        401
+      )
+    );
+  }
   // 4.) check if user change password after the JWT token was issued
 
   next();
