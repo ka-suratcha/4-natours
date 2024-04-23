@@ -3,6 +3,7 @@ const express = require('express');
 
 // REQ OWN MOUDLE
 const tourController = require('./../controllers/tourController');
+const authController = require('./../controllers/authController');
 
 // MIDDLEWARE
 const router = express.Router(); // create new route and save to var
@@ -23,7 +24,7 @@ router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
 
 router
   .route('/') // tourRouteer only run on /api/v1/tours
-  .get(tourController.getAllTours)
+  .get(authController.protect,tourController.getAllTours)
   .post(tourController.createTour);
 
 router
