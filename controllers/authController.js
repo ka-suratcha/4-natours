@@ -20,6 +20,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
+    passwordChangedAt: req.body.passwordChangedAt,
   }); // only allow the data that actually need to be put into the new user
 
   const token = signToken(newUser._id); // create token (header will created automatically)
@@ -86,6 +87,13 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
   // 4.) check if user change password after the JWT token was issued
+  if (freshUser.changesPasswordAfter(decoded.iat)) {
+    return next(
+      new AppError('User recently changed password! Please log in again.', 401)
+    );
+  }
 
+  // GRANT ACCESS TO PROTECTED ROUTE
+  req.user = freshUser;
   next();
 });

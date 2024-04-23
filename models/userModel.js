@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const AppError = require('../utils/appError');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -29,9 +30,10 @@ const userSchema = new mongoose.Schema({
       validator: function (el) {
         return el === this.password;
       },
-      message: 'Password are not the same!',
+      message: 'Passwords are not the same!',
     },
   },
+  passwordChangedAt: Date,
 });
 
 // encryption before store in DB
@@ -47,14 +49,24 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// y doing model -> related to data it self/already hace package in there
-
 // instance method -> available on all document of a certain collection
+// y doing model -> related to data it self/already hace package in there
 userSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+userSchema.methods.changesPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000);
+    console.log(changedTimestamp, JWTTimestamp);
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  // fasle = not changed
+  return false;
 };
 
 const User = mongoose.model('User', userSchema);
